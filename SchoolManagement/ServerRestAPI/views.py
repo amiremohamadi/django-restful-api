@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from json import JSONEncoder
 
-# Create your views here.
+def index(request):
+    """index page"""
+    data ={'status': 'ok'}
+    return JsonResponse(data, encoder=JSONEncoder)
