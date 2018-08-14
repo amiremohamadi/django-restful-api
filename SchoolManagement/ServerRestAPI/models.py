@@ -27,10 +27,10 @@ class Lecture(models.Model):
 
 
 class TeacherLecture(models.Model):
-    TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    LectureID = models.ForeignKey(Lecture, on_delete=models.CASCADE)
+    TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
+    LectureID = models.ForeignKey(Lecture, on_delete=models.CASCADE, null=True)
 
 
 class StudentLecture(models.Model):
-    StudentID = models.ForeignKey(Student, on_delete=models.CASCADE)
-    TeacherLectureID = models.ForeignKey(TeacherLecture, on_delete=models.CASCADE)
+    StudentID = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    TeacherLectureID = models.ForeignKey(TeacherLecture, on_delete=models.CASCADE, null=True)
