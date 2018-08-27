@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 # class MyUser(AbstractUser):
@@ -38,7 +39,14 @@ class TeacherLecture(models.Model):
     TeacherID = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
     LectureID = models.ForeignKey(Lecture, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return "{}_{}".format(self.TeacherID, self.LectureID)
+
 
 class StudentLecture(models.Model):
     StudentID = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     TeacherLectureID = models.ForeignKey(TeacherLecture, on_delete=models.CASCADE, null=True)
+    grade = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(20)], default=0)
+
+    def __str__(self):
+        return "{}_{}".format(self.StudentID, self.TeacherLectureID)
