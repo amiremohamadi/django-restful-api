@@ -68,3 +68,21 @@ def add_grade(request):
     return JsonResponse(
         {'message': 'successful'}, 
         encoder=JSONEncoder, status=200)
+
+
+@csrf_exempt
+def get_teacher_lectures(request):
+    teacher = teacher_auth(request)
+    data = []
+
+    if teacher != None:
+        lectures = teacher.teacherlecture_set.all()
+        data = [str(lecture.LectureID) for lecture in lectures]
+    
+    else:   return JsonResponse(
+        {'message' : 'can\'t login!'},
+         encoder=JSONEncoder, safe=False, status=401)
+
+
+    return JsonResponse(
+        data, encoder=JSONEncoder, safe=False, status=200)
