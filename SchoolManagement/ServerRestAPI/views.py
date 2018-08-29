@@ -7,7 +7,7 @@ from ServerRestAPI.models import (
     Student, Teacher, StudentLecture, 
     TeacherLecture, Lecture
     )
-from ServerRestAPI.auth import teacher_auth
+from ServerRestAPI.auth import auth
 
 
 def index(request):
@@ -20,7 +20,7 @@ def index(request):
 @csrf_exempt
 def add_grade(request):
     """add student grades"""
-    teacher = teacher_auth(request)
+    teacher = auth(request, mode='teacher')
     stu_username = request.POST.get('stu_username')
     lec_name = request.POST.get('lec_name')
     grade = request.POST.get('grade')
@@ -72,8 +72,8 @@ def add_grade(request):
 
 @csrf_exempt
 def get_teacher_lectures(request):
-    teacher = teacher_auth(request)
-    data = []
+    teacher = auth(request, mode='teacher')
+    data = list()
 
     if teacher != None:
         lectures = teacher.teacherlecture_set.all()
@@ -83,6 +83,25 @@ def get_teacher_lectures(request):
         {'message' : 'can\'t login!'},
          encoder=JSONEncoder, safe=False, status=401)
 
-
     return JsonResponse(
         data, encoder=JSONEncoder, safe=False, status=200)
+
+
+@csrf_exempt
+def get_student_lectures(request):
+    student = auth(request, mode='student')
+    data = dict()
+
+    if student != None:
+        lectures = student.studentlecture_set.all()
+        data = {str(lecture.TeacherLectureID.LectureID): "{} {}".format(
+            str(lecture.TeacherLectureID.TeacherID.name), 
+            str(lecture.TeacherLectureID.TeacherID.family)) 
+            for lecture in lectures}
+    
+    else:   return JsonResponse(
+        {'message' : 'can\'t login!'},
+         encoder=JSONEncoder, safe=False, status=401)
+
+    return JsonResponse(
+        data, encoder=JSONEncoder, status=200)
