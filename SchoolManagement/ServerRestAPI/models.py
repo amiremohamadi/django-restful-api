@@ -1,11 +1,7 @@
 from django.db import models
 from django.conf import settings
+from hashlib import md5
 from django.core.validators import MaxValueValidator, MinValueValidator
-
-
-# class MyUser(AbstractUser):
-#     is_student = models.BooleanField(default=False)
-#     is_teacher = models.BooleanField(default=False)
 
 
 class Student(models.Model):
@@ -17,15 +13,23 @@ class Student(models.Model):
     def __str__(self):
         return str(self.username)
 
+    def save(self, *args, **kwargs):
+        self.password = md5(self.password.encode('utf-8')).hexdigest()
+        super().save(*args, **kwargs)
+
 
 class Teacher(models.Model):
     username = models.CharField(max_length=20, unique=True)
-    password = models.CharField(max_length=20, default='1234')
+    password = models.CharField(max_length=50, default='1234')
     name = models.CharField(max_length=20)
     family = models.CharField(max_length=20)
 
     def __str__(self):
         return str(self.username)
+
+    def save(self, *args, **kwargs):
+        self.password = md5(self.password.encode('utf-8')).hexdigest()
+        super().save(*args, **kwargs)
 
 
 class Lecture(models.Model):
